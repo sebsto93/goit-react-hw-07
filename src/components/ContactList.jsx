@@ -1,11 +1,11 @@
-import React from 'react'
-import Contact from './Contact'
-import styles from './ContactList.module.css'
+import React from "react";
+import Contact from "./Contact";
+import styles from "./ContactList.module.css";
 
 const ContactList = ({ contacts, onDeleteContact }) => {
   return (
     <div className={styles.contactList}>
-      {contacts.map(contact => (
+      {contacts.map((contact) => (
         <Contact
           key={contact.id}
           contact={contact}
@@ -13,7 +13,7 @@ const ContactList = ({ contacts, onDeleteContact }) => {
         />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default ContactList
+export default ContactList;

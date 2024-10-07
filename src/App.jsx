@@ -8,6 +8,7 @@ import {
   addContact,
   deleteContact,
 } from "./redux/contactsSlice";
+import { selectFilteredContacts } from "./redux/selectors";
 import { setFilter } from "./redux/filterSlice";
 import styles from "./App.module.css";
 
@@ -18,6 +19,7 @@ const App = () => {
     error,
   } = useSelector((state) => state.contacts);
   const filter = useSelector((state) => state.filters.name);
+  const filteredContacts = useSelector(selectFilteredContacts);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,9 +27,17 @@ const App = () => {
   }, [dispatch]);
 
   const handleAddContact = (name, number) => {
+    const isDuplicate = contacts.some(
+      (contact) => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      alert("Contact with this name already exists.");
+      return;
+    }
+
     dispatch(addContact({ name, number }));
   };
-
   const handleDeleteContact = (id) => {
     dispatch(deleteContact(id));
   };
@@ -35,10 +45,6 @@ const App = () => {
   const handleFilterChange = (e) => {
     dispatch(setFilter(e.target.value));
   };
-
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
 
   return (
     <div className={styles.container}>

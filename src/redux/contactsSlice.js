@@ -1,40 +1,39 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const API_URL = "https://6702aac8bd7c8c1ccd3f8435.mockapi.io/contacts";
+import * as api from "../api/contacts";
 
 export const fetchContacts = createAsyncThunk(
-  "contacts/fetchAll",
-  async (_, thunkAPI) => {
+  "contacts/fetchContacts",
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(API_URL);
-      return response.data;
+      const response = await api.fetchContacts();
+      // console.log("Fetched contacts:", response);
+      return response;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
 export const addContact = createAsyncThunk(
   "contacts/addContact",
-  async (contact, thunkAPI) => {
+  async (contact, { rejectWithValue }) => {
     try {
-      const response = await axios.post(API_URL, contact);
-      return response.data;
+      const response = await api.addContact(contact);
+      return response;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
 
 export const deleteContact = createAsyncThunk(
   "contacts/deleteContact",
-  async (id, thunkAPI) => {
+  async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await api.deleteContact(id);
       return id;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -49,7 +48,7 @@ const contactsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-
+      // Fetch contacts
       .addCase(fetchContacts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -63,6 +62,7 @@ const contactsSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Add contact
       .addCase(addContact.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -76,6 +76,7 @@ const contactsSlice = createSlice({
         state.error = action.payload;
       })
 
+      // Delete contact
       .addCase(deleteContact.pending, (state) => {
         state.loading = true;
         state.error = null;
