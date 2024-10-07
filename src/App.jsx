@@ -52,7 +52,14 @@ const App = () => {
       <ContactForm onAddContact={handleAddContact} />
       <SearchBox value={filter} onChange={handleFilterChange} />
       {loading && <p>Loading contacts...</p>}
-      {error && <p>Error: {error}</p>}
+      {error && (
+        <p>
+          Error: {error.message}{" "}
+          {error.type === "FETCH_CONTACTS" && " - Failed to fetch contacts."}
+          {error.type === "ADD_CONTACT" && " - Failed to add contact."}
+          {error.type === "DELETE_CONTACT" && " - Failed to delete contact."}
+        </p>
+      )}
       <ContactList
         contacts={filteredContacts}
         onDeleteContact={handleDeleteContact}
